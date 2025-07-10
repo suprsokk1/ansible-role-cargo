@@ -20,7 +20,6 @@
       paths:
       - 'os-distro'
       - 'os-family'
-  become: true
 
 - name: Packages
   no_log: true
