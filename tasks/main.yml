@@ -2,43 +2,44 @@
 - name: Gathers facts about remote hosts
   ansible.builtin.setup:
     filter:
-      - 'ansible_distribution'
-      - 'ansible_os_family'
-      - 'ansible_machine_id'
-      - 'ansible_*_version'
-      - 'ansible_distribution_major_version'
+    - 'ansible_distribution'
+    - 'ansible_os_family'
+    - 'ansible_machine_id'
+    - 'ansible_distribution_minor_version'
+    - 'ansible_distribution_major_version'
+  no_log: true
 
 - ansible.builtin.include_tasks: "{{lookup('ansible.builtin.first_found', params)}}"
   vars:
     params:
       files:
-        - '{{ ansible_distribution }}{{ ansible_distribution_major_version }}{{ ansible_distribution_minor_version|d("") }}.yml'
-        - '{{ ansible_distribution }}.yml'
-        - '{{ ansible_os_family }}.yml'
-        - default.yml
+      - '{{ ansible_distribution }}{{ ansible_distribution_major_version }}{{ ansible_distribution_minor_version|d("") }}.yml'
+      - '{{ ansible_distribution }}.yml'
+      - '{{ ansible_os_family }}.yml'
+      - default.yml
       paths:
       - 'os-distro'
       - 'os-family'
+  become: true
 
 - name: Packages
-  no_log: false
+  no_log: true
   set_fact:
     packages: "{{ cargo_packages }}"
 
 - name: Recommendations
   set_fact:
     packages: "{{ packages|union(cargo_recommendations) }}"
-  no_log: false
-  when: cargo_install_recommendations || cargo_install_all_recommendations
+  no_log: true
+  when: cargo_install_recommendations or cargo_install_all_recommendations
 
 - name: Soft recommendations
   set_fact:
     packages: "{{ packages|union(cargo_soft_recommendations) }}"
-  no_log: false
-  when: cargo_install_soft_recommendations || cargo_install_all_recommendations
+  no_log: true
+  when: cargo_install_soft_recommendations or cargo_install_all_recommendations
 
 - name: Install cargo packages
-  tags: cargo
   community.general.cargo:
     name: "{{ packages }}"
     directory: "{{ cargo_directory|d(omit) }}"
