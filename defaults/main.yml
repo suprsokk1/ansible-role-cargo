@@ -2,4 +2,5 @@
 cargo_install_recommendations: false
 cargo_install_soft_recommendations: false
 cargo_install_all_recommendations: false
+cargo_packages: []
 ...
