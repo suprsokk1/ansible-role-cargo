@@ -1,4 +1,0 @@
----
-cargo_recommendations: [ripgrep, fd-find]
-cargo_soft_recommendations: [sd, topgrade, vivid, nomino, coreutils]
-...
