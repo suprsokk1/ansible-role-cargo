@@ -47,7 +47,7 @@
       name: "{{ packages }}"
   rescue:
   - community.general.cargo:
-      name: "{{ item }}"
+      name: "{{ pkg }}"
     loop: "{{ packages }}"
     ignore_errors: true
     loop_control:
