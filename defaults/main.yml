@@ -4,7 +4,7 @@ cargo_install_recommendations: false
 cargo_install_soft_recommendations: false
 cargo_install_all_recommendations: false
 cargo_recommendations: ['ripgrep', 'fd-find']
-cargo_soft_recommendations: ['sd', 'topgrade', 'vivid', 'nomino', 'coreutils']
+cargo_soft_recommendations: ['sd', 'topgrade', 'vivid', 'nomino']
 cargo_install_system_packages: ['cargo']
 cargo_packages: []
 ...
