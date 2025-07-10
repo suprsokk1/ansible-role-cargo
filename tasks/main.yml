@@ -9,17 +9,20 @@
     - 'ansible_distribution_major_version'
   no_log: true
 
-- ansible.builtin.include_tasks: "{{lookup('ansible.builtin.first_found', params)}}"
-  vars:
-    params:
-      files:
-      - '{{ ansible_distribution }}{{ ansible_distribution_major_version }}{{ ansible_distribution_minor_version|d("") }}.yml'
-      - '{{ ansible_distribution }}.yml'
-      - '{{ ansible_os_family }}.yml'
-      - default.yml
-      paths:
-      - 'os-distro'
-      - 'os-family'
+- ansible.builtin.include_vars:
+    file: "{{ item }}"
+  with_first_found:
+  - files: &LOOP_FILES
+    - '{{ ansible_distribution }}{{ ansible_distribution_major_version }}{{ ansible_distribution_minor_version|d("") }}.yml'
+    - '{{ ansible_distribution }}.yml'
+    - '{{ ansible_os_family }}.yml'
+    - 'default.yml'
+    skip: True
+
+- ansible.builtin.include_tasks: "{{ item }}"
+  with_first_found:
+  - files: *LOOP_FILES
+    paths: ['os']
 
 - name: Packages
   no_log: true
@@ -39,7 +42,14 @@
   when: cargo_install_soft_recommendations or cargo_install_all_recommendations
 
 - name: Install cargo packages
-  community.general.cargo:
-    name: "{{ packages }}"
-    directory: "{{ cargo_directory|d(omit) }}"
+  block:
+  - community.general.cargo:
+      name: "{{ packages }}"
+  rescue:
+  - community.general.cargo:
+      name: "{{ item }}"
+    loop: "{{ packages }}"
+    ignore_errors: true
+    loop_control:
+      loop_var: 'pkg'
 ...
