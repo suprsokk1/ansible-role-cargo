@@ -1,0 +1,7 @@
+---
+- name: Install cargo package manager
+  ansible.builtin.dnf5:
+    name: cargo
+    state: present
+  become: true
+...

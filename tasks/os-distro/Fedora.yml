@@ -1,0 +1,13 @@
+---
+- name: Install cargo package manager (dnf)
+  ansible.builtint.dnf:
+    name: cargo
+    state: present
+  when: ansible_facts['ansible_distribution_major_version'] >= 22 && ansible_facts['ansible_distribution_major_version'] < 41
+
+- name: Install cargo package manager (dnf5)
+  ansible.builtint.dnf5:
+    name: cargo
+    state: present
+  when: ansible_facts['ansible_distribution_major_version'] >= 41
+...
